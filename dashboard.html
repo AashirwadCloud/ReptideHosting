@@ -55,6 +55,8 @@
       display: flex;
       gap: 20px;
       margin-top: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
     }
 
     .glow-btn {
@@ -154,9 +156,9 @@
 
     let uid = null;
 
-    function conjBoxes(isControl) {
-      createBox.classList.toggle('hidden', isControl);
-      controlBox.classList.toggle('hidden', !isControl);
+    function conjBoxes(showControls) {
+      createBox.classList.toggle('hidden', showControls);
+      controlBox.classList.toggle('hidden', !showControls);
     }
 
     function showCreate() {
@@ -184,15 +186,13 @@
     function createServer() {
       const name = document.getElementById('servername').value.trim();
       const ip = document.getElementById('serverip').value.trim();
-      if (!name || !ip) return alert('Enter both name & IP');
+      if (!name || !ip) return alert('Please enter both name and IP.');
 
       set(ref(db, `users/${uid}/server`), {
         status: 'stopped',
         name,
         ip
-      }).then(() => {
-        alert('✅ Server created!');
-      });
+      }).then(() => alert('✅ Server created!'));
     }
 
     function setServer(state) {
@@ -202,9 +202,7 @@
     function deployServer() {
       update(ref(db, `users/${uid}/server`), {
         deploy: Date.now()
-      }).then(() => {
-        alert("🚀 Deployment triggered (check Colab)");
-      });
+      }).then(() => alert("🚀 Deployment triggered. Check Colab!"));
     }
 
     function logout() {
