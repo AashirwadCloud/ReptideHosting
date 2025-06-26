@@ -9,7 +9,7 @@
       margin: 0;
       padding: 0;
       height: 100%;
-      font-family: "Orbitron", "Segoe UI", sans-serif;
+      font-family: "Orbitron", sans-serif;
       background: linear-gradient(to bottom right, #0f0f1a, #1f002d);
       color: white;
       overflow: hidden;
@@ -36,7 +36,6 @@
     #status {
       font-size: 1.2rem;
       margin: 10px;
-      color: #00f0ff;
     }
 
     .buttons {
@@ -54,7 +53,6 @@
       background: linear-gradient(to right, #00f0ff, #7a00ff);
       color: white;
       cursor: pointer;
-      position: relative;
       transition: all 0.3s ease-in-out;
       box-shadow: 0 0 12px #00f0ff80;
     }
@@ -77,6 +75,10 @@
       cursor: pointer;
     }
 
+    .hidden {
+      display: none;
+    }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
@@ -88,10 +90,16 @@
     <h1>ReptideHosting</h1>
     <p id="status">Loading server status...</p>
 
-    <div class="buttons">
+    <div class="buttons" id="controls" class="hidden">
       <button class="glow-btn" onclick="setServer('started')">Start Server</button>
       <button class="glow-btn" onclick="setServer('stopped')">Stop Server</button>
     </div>
+
+    <div id="createServerBox" class="hidden">
+      <p>⚠️ No server found.</p>
+      <button class="glow-btn" onclick="createServer()">Create My Server</button>
+    </div>
+
     <button class="logout" onclick="logout()">Logout</button>
   </div>
 
@@ -112,34 +120,57 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+
     const statusText = document.getElementById('status');
+    const controls = document.getElementById('controls');
+    const createBox = document.getElementById('createServerBox');
 
-    function setServer(state) {
-      set(ref(db, 'server'), { status: state });
-    }
-
-    function logout() {
-      signOut(auth).then(() => {
-        alert("Logged out.");
-        window.location.href = "login.html";
-      });
-    }
+    let userUID = null;
 
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         window.location.href = "login.html";
+        return;
       }
+
+      userUID = user.uid;
+      const statusRef = ref(db, `users/${userUID}/server/status`);
+
+      onValue(statusRef, (snapshot) => {
+        if (snapshot.exists()) {
+          const val = snapshot.val();
+          statusText.textContent = `Server is ${val.toUpperCase()}`;
+          statusText.style.color = val === 'started' ? '#00ff88' : '#ff0044';
+          controls.classList.remove('hidden');
+          createBox.classList.add('hidden');
+        } else {
+          statusText.textContent = "⚠️ No server found.";
+          controls.classList.add('hidden');
+          createBox.classList.remove('hidden');
+        }
+      });
     });
 
-    onValue(ref(db, 'server/status'), (snapshot) => {
-      const val = snapshot.val();
-      if (val) {
-        statusText.textContent = `Server is ${val.toUpperCase()}`;
-        statusText.style.color = val === 'started' ? '#00ff88' : '#ff0044';
-      } else {
-        statusText.textContent = "Status: Unknown";
-      }
-    });
+    function setServer(state) {
+      if (!userUID) return;
+      set(ref(db, `users/${userUID}/server`), {
+        status: state
+      });
+    }
+
+    function createServer() {
+      if (!userUID) return;
+      set(ref(db, `users/${userUID}/server`), {
+        status: "stopped"
+      });
+      alert("Server created! You can now start it.");
+    }
+
+    function logout() {
+      signOut(auth).then(() => {
+        window.location.href = "login.html";
+      });
+    }
   </script>
 </body>
 </html>
