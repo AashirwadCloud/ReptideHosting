@@ -1,16 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Sign Up – ReptideHosting</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Signup – ReptideHosting</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+    body, html { height: 100%; width: 100%; overflow: hidden; }
+    .bg-video {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -2;
+    }
+    .overlay {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom right, rgba(0,0,0,0.7), rgba(0, 50, 100, 0.7));
+      z-index: -1;
+    }
+    .form-container {
+      position: relative;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 2rem;
+      color: white;
+    }
+    input, button {
+      padding: 1rem;
+      margin-bottom: 1rem;
+      width: 100%;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+    input {
+      background: rgba(255,255,255,0.2);
+      color: white;
+    }
+    button {
+      background: #00bcd4;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    a { color: #90caf9; }
+  </style>
 </head>
 <body>
-  <h2>Create an Account</h2>
-  <form id="signup-form">
-    <input type="email" id="email" placeholder="Email" required><br>
-    <input type="password" id="password" placeholder="Password" required><br>
-    <button type="submit">Sign Up</button>
-  </form>
-  <p>Already have an account? <a href="login.html">Login here</a></p>
+
+  <!-- Background Video -->
+  <video class="bg-video" autoplay loop muted playsinline>
+    <source src="https://www.w3schools.com/howto/rain.mp4" type="video/mp4" />
+    Your browser does not support video.
+  </video>
+  <div class="overlay"></div>
+
+  <!-- Signup Form -->
+  <div class="form-container">
+    <h2>Sign Up</h2>
+    <form id="signup-form">
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <button type="submit">Create Account</button>
+    </form>
+    <p>Already have an account? <a href="login.html">Login</a></p>
+  </div>
 
   <script type="module">
     import { auth } from './firebase.js';
@@ -24,11 +83,11 @@
 
       createUserWithEmailAndPassword(auth, email, password)
         .then(() => {
-          alert("Signup successful! Redirecting to login...");
+          alert("Signup successful!");
           window.location.href = "login.html";
         })
         .catch((error) => {
-          alert("Signup failed: " + error.message);
+          alert("Error: " + error.message);
         });
     });
   </script>
