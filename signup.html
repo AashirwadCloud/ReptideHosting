@@ -14,22 +14,8 @@
   <p>Already have an account? <a href="login.html">Login</a></p>
 
   <script type="module">
-    import { auth, createUserWithEmailAndPassword } from './firebase.js';
-
-    document.getElementById('signup-form').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(userCredential => {
-          alert("Signup successful!");
-          window.location.href = "login.html";
-        })
-        .catch(error => {
-          alert("Error: " + error.message);
-        });
-    });
+  import { auth } from './firebase.js';
+  import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
   </script>
 </body>
 </html>
