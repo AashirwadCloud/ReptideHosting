@@ -5,85 +5,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sign Up – ReptideHosting</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
+ body, html {
+  animation: fadeIn 1.5s ease-in-out;
+}
 
-    body, html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      font-family: "Segoe UI", sans-serif;
-      overflow: hidden;
-    }
+.overlay {
+  background: linear-gradient(135deg, rgba(0,255,255,0.3), rgba(0,0,0,0.7));
+  animation: bgShift 8s infinite alternate;
+}
 
-    video.bg {
-      position: fixed;
-      top: 0; left: 0;
-      min-width: 100%;
-      min-height: 100%;
-      object-fit: cover;
-      z-index: -2;
-    }
+@keyframes bgShift {
+  0% { background-position: left top; }
+  100% { background-position: right bottom; }
+}
 
-    .overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(to bottom right, rgba(0,0,0,0.6), rgba(0,0,0,0.8));
-      z-index: -1;
-    }
+.form-container {
+  animation: formFade 1.2s ease-out;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+}
 
-    .form-container {
-      position: absolute;
-      bottom: 10%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(255,255,255,0.1);
-      padding: 30px;
-      border-radius: 12px;
-      text-align: center;
-      backdrop-filter: blur(10px);
-      color: white;
-    }
+@keyframes formFade {
+  from { opacity: 0; transform: translate(-50%, 20%); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
 
-    input {
-      width: 90%;
-      padding: 10px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-    }
+button {
+  background: linear-gradient(to right, #00d4ff, #0077ff);
+  transition: all 0.3s ease-in-out;
+}
 
-    button {
-      width: 95%;
-      padding: 10px;
-      background: #00d4ff;
-      border: none;
-      border-radius: 8px;
-      color: white;
-      font-weight: bold;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #009ecf;
-    }
-
-    a {
-      color: #fff;
-      text-decoration: underline;
-    }
-
-    @media (max-width: 600px) {
-      .form-container {
-        width: 90%;
-      }
-    }
-  </style>
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px #00f0ff;
+}
+</style>
 </head>
 <body>
 
