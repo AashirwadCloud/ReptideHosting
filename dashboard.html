@@ -1,65 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>ReptideHosting Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard – ReptideHosting</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      background-color: #0f1126;
-      color: #fff;
+      margin: 0;
+      padding: 0;
       font-family: 'Orbitron', sans-serif;
+      background-color: #0f1126;
+      color: white;
+      text-align: center;
       padding: 20px;
     }
 
     h1 {
-      text-align: center;
-      font-size: 2.2em;
+      font-size: 2.5em;
       margin-bottom: 30px;
       background: linear-gradient(to right, #00f0ff, #ff00ff);
       -webkit-background-clip: text;
       color: transparent;
     }
 
-    .stats-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 16px;
-      margin-bottom: 30px;
-    }
-
-    .stat-box {
-      background: #191b2a;
-      padding: 16px;
-      border-radius: 12px;
-      width: 150px;
-      text-align: center;
-      box-shadow: 0 0 10px rgba(0,255,255,0.2);
-      transition: all 0.3s ease;
-    }
-
-    .stat-box:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 20px #00f0ff;
-    }
-
-    .stat-icon {
-      font-size: 24px;
-      margin-bottom: 10px;
+    .inputs input {
+      width: 240px;
+      padding: 10px;
+      margin: 10px 5px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
     }
 
     .create-btn {
       background: linear-gradient(to right, #00f0ff, #7a00ff);
-      color: white;
+      padding: 12px 24px;
+      border-radius: 10px;
       border: none;
-      padding: 10px 20px;
-      border-radius: 12px;
+      color: white;
       font-weight: bold;
       cursor: pointer;
-      box-shadow: 0 0 10px #00f0ff80;
-      margin-top: 10px;
+      transition: 0.3s;
+      margin-top: 15px;
+      box-shadow: 0 0 12px #00f0ff80;
     }
 
     .create-btn:hover {
@@ -67,93 +50,55 @@
       box-shadow: 0 0 20px #00f0ff;
     }
 
-    .server-section {
-      margin-top: 30px;
-      text-align: center;
+    .hidden {
+      display: none;
     }
 
-    .server-table {
-      width: 100%;
-      max-width: 800px;
-      margin: auto;
-      margin-top: 10px;
-      border-collapse: collapse;
+    .progress-bar-container {
+      width: 80%;
+      background-color: #222;
+      margin: 20px auto;
+      border-radius: 8px;
+      height: 16px;
     }
 
-    .server-table th,
-    .server-table td {
-      border: 1px solid #2c2e47;
-      padding: 12px;
-    }
-
-    .server-table th {
-      background: #181b32;
-    }
-
-    .server-table td {
-      background: #1e213a;
-    }
-
-    @media(max-width: 600px) {
-      .stat-box {
-        width: 120px;
-        font-size: 14px;
-      }
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      background-color: #00f0ff;
+      border-radius: 8px;
+      transition: width 0.4s ease;
     }
   </style>
 </head>
 <body>
+
   <h1>ReptideHosting Dashboard</h1>
 
-  <div class="stats-grid" id="stats">
-    <div class="stat-box">
-      <div class="stat-icon">💾</div>
-      <p>RAM</p>
-      <b id="ram">3072MB</b>
-    </div>
-    <div class="stat-box">
-      <div class="stat-icon">📦</div>
-      <p>Disk</p>
-      <b id="disk">5120MB</b>
-    </div>
-    <div class="stat-box">
-      <div class="stat-icon">🧠</div>
-      <p>CPU</p>
-      <b id="cpu">100%</b>
-    </div>
-    <div class="stat-box">
-      <div class="stat-icon">🔐</div>
-      <p>Slots</p>
-      <b id="slots">1 / 1</b>
-    </div>
-    <div class="stat-box">
-      <div class="stat-icon">🪙</div>
-      <p>Coins</p>
-      <b id="coins">7</b>
-    </div>
-  </div>
+  <div id="createBox">
+    <p style="color:#ff6b6b;">🚫 No Server Created</p>
 
-  <div class="server-section">
-    <p id="serverMsg" style="margin-bottom: 10px; color: #ff6b6b;">No server created yet.</p>
-    <button class="create-btn" onclick="createServer()">➕ Create Server</button>
+    <div class="inputs">
+      <input type="text" id="servername" placeholder="Enter Server Name" />
+      <input type="text" id="serverip" placeholder="Enter Server IP or Domain" />
+    </div>
 
-    <table class="server-table" id="serverTable" style="display: none;">
-      <thead>
-        <tr>
-          <th>Server Name</th>
-          <th>Node</th>
-          <th>Status</th>
-          <th>Server Type</th>
-        </tr>
-      </thead>
-      <tbody id="serverList"></tbody>
-    </table>
+    <button class="create-btn" id="createBtn" onclick="createServer()">➕ Create Server</button>
+
+    <div id="progressBox" class="hidden">
+      <p>Creating server... please wait</p>
+      <div class="progress-bar-container">
+        <div id="bar" class="progress-bar"></div>
+      </div>
+    </div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
-    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-database.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
+    import {
+      getDatabase, ref, set, update
+    } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBDJgEb2uCYOTfACJRr4ni-TPLdocP4pxk",
@@ -173,55 +118,49 @@
     onAuthStateChanged(auth, (user) => {
       if (!user) return location.href = 'login.html';
       uid = user.uid;
-      loadServerData();
     });
 
-    function loadServerData() {
-      const srvRef = ref(db, `users/${uid}/server`);
-      onValue(srvRef, (snap) => {
-        const data = snap.val();
-        const msg = document.getElementById('serverMsg');
-        const table = document.getElementById('serverTable');
-        const tbody = document.getElementById('serverList');
-
-        if (!data) {
-          msg.style.display = 'block';
-          table.style.display = 'none';
-          return;
-        }
-
-        msg.style.display = 'none';
-        table.style.display = 'table';
-
-        tbody.innerHTML = `
-          <tr>
-            <td>${data.name || 'My Server'}</td>
-            <td>${data.node || 'node1'}</td>
-            <td>${data.status || 'Offline'}</td>
-            <td>${data.type || 'Vanilla'}</td>
-          </tr>
-        `;
-      });
-    }
-
     function createServer() {
-      const serverData = {
-        name: "My Server",
-        node: "node1",
-        status: "Offline",
-        type: "Vanilla"
-      };
-      function deployServer() {
-  update(ref(db, `users/${uid}`), {
-    deployTrigger: true
-  }).then(() => alert("🚀 Deploy trigger sent to Colab!"));
-}
+      const name = document.getElementById('servername').value.trim();
+      const ip = document.getElementById('serverip').value.trim();
+      const createBtn = document.getElementById('createBtn');
+      const bar = document.getElementById('bar');
+      const progressBox = document.getElementById('progressBox');
 
+      if (!name || !ip) return alert("Please enter both server name and IP.");
 
-      set(ref(db, `users/${uid}/server`), serverData).then(() => {
-        alert("✅ Server Created!");
-      });
+      createBtn.disabled = true;
+      progressBox.classList.remove("hidden");
+
+      let progress = 0;
+
+      const loader = setInterval(() => {
+        progress += Math.random() * 20;
+        bar.style.width = Math.min(progress, 100) + "%";
+
+        if (progress >= 100) {
+          clearInterval(loader);
+
+          // Save server info
+          set(ref(db, `users/${uid}/server`), {
+            name: name,
+            ip: ip,
+            ram: 3072,
+            type: "Vanilla",
+            status: "Offline"
+          });
+
+          // Trigger auto-deploy
+          update(ref(db, `users/${uid}`), {
+            deployTrigger: true
+          }).then(() => {
+            bar.style.backgroundColor = "#00ff88";
+            progressBox.innerHTML = "<p style='color:#00ff88;'>✅ Server Created Successfully!</p>";
+          });
+        }
+      }, 500);
     }
   </script>
+
 </body>
 </html>
