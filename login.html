@@ -10,27 +10,26 @@
     <input type="password" id="password" placeholder="Password" required><br>
     <button type="submit">Login</button>
   </form>
-  <p>No account yet? <a href="signup.html">Sign up</a></a>
-    <script type="module">
-  import { auth } from './firebase.js';
-  import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
+  <p>No account? <a href="signup.html">Sign up</a></p>
 
-  document.getElementById('login-form').addEventListener('submit', (e) => {
-    e.preventDefault();
+  <script type="module">
+    import { auth } from './firebase.js';
+    import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
 
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+    const form = document.getElementById('login-form');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = form.email.value;
+      const password = form.password.value;
 
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // ✅ Login successful – redirect to dashboard
-        window.location.href = "dashboard.html";
-      })
-      .catch((error) => {
-        alert("Login failed: " + error.message);
-      });
-  });
-</script>
-
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          window.location.href = "dashboard.html";
+        })
+        .catch((error) => {
+          alert("Login failed: " + error.message);
+        });
+    });
+  </script>
 </body>
 </html>
