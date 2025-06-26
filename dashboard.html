@@ -211,6 +211,12 @@
         status: "Offline",
         type: "Vanilla"
       };
+      function deployServer() {
+  update(ref(db, `users/${uid}`), {
+    deployTrigger: true
+  }).then(() => alert("🚀 Deploy trigger sent to Colab!"));
+}
+
 
       set(ref(db, `users/${uid}/server`), serverData).then(() => {
         alert("✅ Server Created!");
