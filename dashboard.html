@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ReptideHosting Dashboard</title>
+  <title>ReptideHosting Panel</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
 
   <style>
@@ -15,70 +15,86 @@
       margin: 0;
       font-family: 'Orbitron', sans-serif;
       background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
-      color: white;
+      color: #ffffff;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 2rem;
+      min-height: 100vh;
     }
 
     h1 {
       text-align: center;
       margin-bottom: 2rem;
+      color: #ffffff;
+      font-size: 2.2rem;
+      text-shadow: 0 0 8px rgba(255,255,255,0.2);
     }
 
     .card-grid {
       display: grid;
-      grid-template-columns: repeat(2, 140px);
+      grid-template-columns: repeat(2, 150px);
       gap: 1.5rem;
       margin-bottom: 2rem;
       justify-content: center;
     }
 
     .card {
-      background: linear-gradient(135deg, #1f1c2c, #928dab);
-      border-radius: 12px;
+      background: linear-gradient(145deg, #1c1b33, #2a2740);
+      border-radius: 14px;
       padding: 1rem;
       text-align: center;
-      box-shadow: 0 0 10px rgba(255,255,255,0.1);
+      box-shadow: 0 0 10px rgba(64, 64, 128, 0.5);
+      border: 1px solid rgba(255,255,255,0.08);
       animation: pop 0.6s ease;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 18px #5468ff;
     }
 
     .card-title {
       font-size: 0.9rem;
       margin-bottom: 0.5rem;
+      color: #ccc;
     }
 
     .card-value {
       font-size: 1.3rem;
       font-weight: bold;
-      color: #ffd700;
+      color: #00ffcc;
+      text-shadow: 0 0 5px rgba(0,255,204,0.3);
     }
 
     .message {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
       padding: 1rem 2rem;
       border-radius: 10px;
       margin-bottom: 2rem;
       text-align: center;
       font-size: 1.1rem;
       animation: pulse 2s infinite;
+      color: #ffd2d2;
+      box-shadow: 0 0 10px rgba(255, 50, 50, 0.2);
     }
 
     .btn {
       background: linear-gradient(135deg, #ff416c, #ff4b2b);
       border: none;
-      padding: 1rem 2rem;
+      padding: 1rem 2.5rem;
       border-radius: 10px;
       color: white;
       font-size: 1.1rem;
       font-weight: bold;
-      box-shadow: 0 0 10px rgba(255, 65, 108, 0.7), 0 0 20px rgba(255, 75, 43, 0.7);
-      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 10px rgba(255, 65, 108, 0.7);
+      transition: transform 0.3s, box-shadow 0.3s;
     }
 
     .btn:hover {
       transform: scale(1.05);
+      box-shadow: 0 0 20px #ff4b2b;
       cursor: pointer;
     }
 
@@ -87,7 +103,7 @@
       max-width: 300px;
       margin-bottom: 1rem;
       border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      box-shadow: 0 0 25px rgba(0,0,0,0.6);
       animation: fadeIn 1s ease;
     }
 
@@ -97,9 +113,9 @@
     }
 
     @keyframes pulse {
-      0% { opacity: 0.5; }
+      0% { opacity: 0.6; }
       50% { opacity: 1; }
-      100% { opacity: 0.5; }
+      100% { opacity: 0.6; }
     }
 
     @keyframes fadeIn {
@@ -115,7 +131,6 @@
   <div id="dashboard"></div>
 
   <script>
-    // Toggle this between true or false to show the two layouts
     let hasServer = false;
 
     const dashboard = document.getElementById("dashboard");
@@ -149,7 +164,7 @@
           ${createCard("CPU", "27%")}
           ${createCard("Slot", "1 / 1")}
         </div>
-        <div class="message">✅ Server is running and online!</div>
+        <div class="message" style="color:#d0ffd0;">✅ Server is live and running!</div>
         <img src="https://i.imgur.com/hYGEZBt.jpg" alt="Server Image" class="server-image">
         <button class="btn">🛠 Manage Server</button>
       `;
