@@ -3,16 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ReptideHosting Dashboard</title>
-
-  <!-- Valorant-style Font -->
+  <title>ReptideHosting Panel</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
 
   <style>
-    /* Base styling */
     body {
       margin: 0;
-      padding: 0;
       font-family: 'Orbitron', sans-serif;
       background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
       color: white;
@@ -37,7 +33,6 @@
       list-style: none;
       display: flex;
       gap: 2rem;
-      padding: 0;
       margin: 0;
     }
 
@@ -52,25 +47,16 @@
       color: #ffd700;
     }
 
-    /* Dashboard Content */
     .dashboard-container {
+      padding: 3rem;
       text-align: center;
-      margin-top: 5rem;
     }
 
     h1 {
       font-size: 2.5rem;
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
     }
 
-    .button-group {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      flex-wrap: wrap;
-    }
-
-    /* Valorant-style Buttons */
     .valorant-btn {
       background: linear-gradient(135deg, #ff416c, #ff4b2b);
       border: none;
@@ -81,6 +67,7 @@
       font-weight: bold;
       box-shadow: 0 0 10px rgba(255, 65, 108, 0.7), 0 0 20px rgba(255, 75, 43, 0.7);
       transition: transform 0.2s, box-shadow 0.2s;
+      margin: 0.5rem;
     }
 
     .valorant-btn:hover {
@@ -88,33 +75,134 @@
       box-shadow: 0 0 20px rgba(255, 65, 108, 0.9), 0 0 40px rgba(255, 75, 43, 0.9);
       cursor: pointer;
     }
+
+    /* Status Cards */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+
+    .card {
+      background: linear-gradient(145deg, #1f1c2c, #928dab);
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      width: 200px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.1);
+    }
+
+    .card h3 {
+      margin-bottom: 0.5rem;
+      font-size: 1.2rem;
+    }
+
+    .card p {
+      font-size: 1.5rem;
+    }
+
+    /* No server msg */
+    .no-server {
+      font-size: 1.3rem;
+      padding: 1rem;
+      color: #ffbbbb;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.5; }
+      50% { opacity: 1; }
+      100% { opacity: 0.5; }
+    }
+
+    /* Notification */
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      animation: slideIn 0.5s ease-out;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* Loader Bar */
+    .loader-bar {
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(to right, #ff416c, #ff4b2b);
+      animation: load 3s linear infinite;
+    }
+
+    @keyframes load {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
   </style>
 </head>
-
 <body>
 
-  <!-- NAVIGATION -->
+  <div class="loader-bar"></div>
+
   <nav class="navbar">
     <div class="logo">🌀 ReptideHosting</div>
     <ul class="nav-links">
       <li><a href="#">Dashboard</a></li>
       <li><a href="#">My Servers</a></li>
       <li><a href="#">Create</a></li>
-      <li><a href="#">Settings</a></li>
       <li><a href="#">Logout</a></li>
     </ul>
   </nav>
 
-  <!-- MAIN DASHBOARD -->
   <main class="dashboard-container">
-    <h1>Welcome to Your Panel</h1>
+    <h1>Welcome to Your Minecraft Server Panel</h1>
+
+    <div id="serverStatus" class="no-server">
+      ❌ No Server Created Yet
+    </div>
+
     <div class="button-group">
-      <button class="valorant-btn">Create Server</button>
-      <button class="valorant-btn">Start</button>
-      <button class="valorant-btn">Stop</button>
-      <button class="valorant-btn">Delete</button>
+      <button class="valorant-btn" onclick="showToast('Creating Server...')">Create Server</button>
+      <button class="valorant-btn" onclick="showToast('Starting Server...')">Start</button>
+      <button class="valorant-btn" onclick="showToast('Stopping Server...')">Stop</button>
+      <button class="valorant-btn" onclick="showToast('Deleting Server...')">Delete</button>
+    </div>
+
+    <div class="stats">
+      <div class="card">
+        <h3>RAM</h3>
+        <p>1024 MB</p>
+      </div>
+      <div class="card">
+        <h3>Disk</h3>
+        <p>2 GB</p>
+      </div>
+      <div class="card">
+        <h3>CPU</h3>
+        <p>35%</p>
+      </div>
     </div>
   </main>
+
+  <script>
+    function showToast(message) {
+      const toast = document.createElement("div");
+      toast.className = "toast";
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        toast.remove();
+      }, 3000);
+    }
+  </script>
 
 </body>
 </html>
