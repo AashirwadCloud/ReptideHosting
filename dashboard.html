@@ -3,61 +3,69 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ReptideHosting Panel</title>
+  <title>ReptideHosting Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: 'Orbitron', sans-serif;
       background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
       color: white;
-    }
-
-    /* Navbar */
-    .navbar {
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
       align-items: center;
-      background: linear-gradient(90deg, #ff416c, #ff4b2b);
-      padding: 1rem 2rem;
-      box-shadow: 0 4px 30px rgba(255, 50, 100, 0.4);
-    }
-
-    .logo {
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-
-    .nav-links {
-      list-style: none;
-      display: flex;
-      gap: 2rem;
-      margin: 0;
-    }
-
-    .nav-links a {
-      text-decoration: none;
-      color: white;
-      font-weight: 600;
-      transition: color 0.3s;
-    }
-
-    .nav-links a:hover {
-      color: #ffd700;
-    }
-
-    .dashboard-container {
-      padding: 3rem;
-      text-align: center;
+      padding: 2rem;
     }
 
     h1 {
-      font-size: 2.5rem;
-      margin-bottom: 1.5rem;
+      text-align: center;
+      margin-bottom: 2rem;
     }
 
-    .valorant-btn {
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 140px);
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      justify-content: center;
+    }
+
+    .card {
+      background: linear-gradient(135deg, #1f1c2c, #928dab);
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(255,255,255,0.1);
+      animation: pop 0.6s ease;
+    }
+
+    .card-title {
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-value {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #ffd700;
+    }
+
+    .message {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1rem 2rem;
+      border-radius: 10px;
+      margin-bottom: 2rem;
+      text-align: center;
+      font-size: 1.1rem;
+      animation: pulse 2s infinite;
+    }
+
+    .btn {
       background: linear-gradient(135deg, #ff416c, #ff4b2b);
       border: none;
       padding: 1rem 2rem;
@@ -67,47 +75,25 @@
       font-weight: bold;
       box-shadow: 0 0 10px rgba(255, 65, 108, 0.7), 0 0 20px rgba(255, 75, 43, 0.7);
       transition: transform 0.2s, box-shadow 0.2s;
-      margin: 0.5rem;
     }
 
-    .valorant-btn:hover {
+    .btn:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 20px rgba(255, 65, 108, 0.9), 0 0 40px rgba(255, 75, 43, 0.9);
       cursor: pointer;
     }
 
-    /* Status Cards */
-    .stats {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      flex-wrap: wrap;
-      margin-top: 2rem;
-    }
-
-    .card {
-      background: linear-gradient(145deg, #1f1c2c, #928dab);
+    .server-image {
+      width: 100%;
+      max-width: 300px;
+      margin-bottom: 1rem;
       border-radius: 12px;
-      padding: 1.5rem 2rem;
-      width: 200px;
-      box-shadow: 0 0 20px rgba(255,255,255,0.1);
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      animation: fadeIn 1s ease;
     }
 
-    .card h3 {
-      margin-bottom: 0.5rem;
-      font-size: 1.2rem;
-    }
-
-    .card p {
-      font-size: 1.5rem;
-    }
-
-    /* No server msg */
-    .no-server {
-      font-size: 1.3rem;
-      padding: 1rem;
-      color: #ffbbbb;
-      animation: pulse 2s infinite;
+    @keyframes pop {
+      0% { transform: scale(0.9); opacity: 0.5; }
+      100% { transform: scale(1); opacity: 1; }
     }
 
     @keyframes pulse {
@@ -116,93 +102,73 @@
       100% { opacity: 0.5; }
     }
 
-    /* Notification */
-    .toast {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: linear-gradient(135deg, #00c6ff, #0072ff);
-      color: white;
-      padding: 1rem 1.5rem;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
-      animation: slideIn 0.5s ease-out;
-    }
-
-    @keyframes slideIn {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-
-    /* Loader Bar */
-    .loader-bar {
-      width: 100%;
-      height: 5px;
-      background: linear-gradient(to right, #ff416c, #ff4b2b);
-      animation: load 3s linear infinite;
-    }
-
-    @keyframes load {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 100% 50%; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
+
 <body>
+  <h1>🎮 ReptideHosting Panel</h1>
 
-  <div class="loader-bar"></div>
-
-  <nav class="navbar">
-    <div class="logo">🌀 ReptideHosting</div>
-    <ul class="nav-links">
-      <li><a href="#">Dashboard</a></li>
-      <li><a href="#">My Servers</a></li>
-      <li><a href="#">Create</a></li>
-      <li><a href="#">Logout</a></li>
-    </ul>
-  </nav>
-
-  <main class="dashboard-container">
-    <h1>Welcome to Your Minecraft Server Panel</h1>
-
-    <div id="serverStatus" class="no-server">
-      ❌ No Server Created Yet
-    </div>
-
-    <div class="button-group">
-      <button class="valorant-btn" onclick="showToast('Creating Server...')">Create Server</button>
-      <button class="valorant-btn" onclick="showToast('Starting Server...')">Start</button>
-      <button class="valorant-btn" onclick="showToast('Stopping Server...')">Stop</button>
-      <button class="valorant-btn" onclick="showToast('Deleting Server...')">Delete</button>
-    </div>
-
-    <div class="stats">
-      <div class="card">
-        <h3>RAM</h3>
-        <p>1024 MB</p>
-      </div>
-      <div class="card">
-        <h3>Disk</h3>
-        <p>2 GB</p>
-      </div>
-      <div class="card">
-        <h3>CPU</h3>
-        <p>35%</p>
-      </div>
-    </div>
-  </main>
+  <div id="dashboard"></div>
 
   <script>
-    function showToast(message) {
-      const toast = document.createElement("div");
-      toast.className = "toast";
-      toast.textContent = message;
-      document.body.appendChild(toast);
-      setTimeout(() => {
-        toast.remove();
-      }, 3000);
-    }
-  </script>
+    // Toggle this between true or false to show the two layouts
+    let hasServer = false;
 
+    const dashboard = document.getElementById("dashboard");
+
+    function createCard(title, value) {
+      return `
+        <div class="card">
+          <div class="card-title">${title}</div>
+          <div class="card-value">${value}</div>
+        </div>`;
+    }
+
+    function renderPhase1() {
+      dashboard.innerHTML = `
+        <div class="card-grid">
+          ${createCard("RAM", "0 / 1024MB")}
+          ${createCard("Disk", "0 / 2GB")}
+          ${createCard("CPU", "0%")}
+          ${createCard("Slot", "0 / 1")}
+        </div>
+        <div class="message">❌ No server created yet.</div>
+        <button class="btn" onclick="simulateCreate()">🚀 Create Server</button>
+      `;
+    }
+
+    function renderPhase2() {
+      dashboard.innerHTML = `
+        <div class="card-grid">
+          ${createCard("RAM", "512MB / 1024MB")}
+          ${createCard("Disk", "1.5GB / 2GB")}
+          ${createCard("CPU", "27%")}
+          ${createCard("Slot", "1 / 1")}
+        </div>
+        <div class="message">✅ Server is running and online!</div>
+        <img src="https://i.imgur.com/hYGEZBt.jpg" alt="Server Image" class="server-image">
+        <button class="btn">🛠 Manage Server</button>
+      `;
+    }
+
+    function simulateCreate() {
+      const msg = document.querySelector(".message");
+      msg.textContent = "⏳ Creating server...";
+      setTimeout(() => {
+        hasServer = true;
+        render();
+      }, 2000);
+    }
+
+    function render() {
+      hasServer ? renderPhase2() : renderPhase1();
+    }
+
+    render();
+  </script>
 </body>
 </html>
