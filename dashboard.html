@@ -3,164 +3,118 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard – ReptideHosting</title>
+  <title>ReptideHosting Dashboard</title>
+
+  <!-- Valorant-style Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+
   <style>
+    /* Base styling */
     body {
       margin: 0;
       padding: 0;
       font-family: 'Orbitron', sans-serif;
-      background-color: #0f1126;
+      background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
       color: white;
+    }
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(90deg, #ff416c, #ff4b2b);
+      padding: 1rem 2rem;
+      box-shadow: 0 4px 30px rgba(255, 50, 100, 0.4);
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 2rem;
+      padding: 0;
+      margin: 0;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: white;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #ffd700;
+    }
+
+    /* Dashboard Content */
+    .dashboard-container {
       text-align: center;
-      padding: 20px;
+      margin-top: 5rem;
     }
 
     h1 {
-      font-size: 2.5em;
-      margin-bottom: 30px;
-      background: linear-gradient(to right, #00f0ff, #ff00ff);
-      -webkit-background-clip: text;
-      color: transparent;
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
     }
 
-    .inputs input {
-      width: 240px;
-      padding: 10px;
-      margin: 10px 5px;
-      border-radius: 8px;
+    .button-group {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    /* Valorant-style Buttons */
+    .valorant-btn {
+      background: linear-gradient(135deg, #ff416c, #ff4b2b);
       border: none;
-      font-size: 16px;
-    }
-
-    .create-btn {
-      background: linear-gradient(to right, #00f0ff, #7a00ff);
-      padding: 12px 24px;
+      padding: 1rem 2rem;
       border-radius: 10px;
-      border: none;
       color: white;
+      font-size: 1.1rem;
       font-weight: bold;
-      cursor: pointer;
-      transition: 0.3s;
-      margin-top: 15px;
-      box-shadow: 0 0 12px #00f0ff80;
+      box-shadow: 0 0 10px rgba(255, 65, 108, 0.7), 0 0 20px rgba(255, 75, 43, 0.7);
+      transition: transform 0.2s, box-shadow 0.2s;
     }
 
-    .create-btn:hover {
+    .valorant-btn:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 20px #00f0ff;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .progress-bar-container {
-      width: 80%;
-      background-color: #222;
-      margin: 20px auto;
-      border-radius: 8px;
-      height: 16px;
-    }
-
-    .progress-bar {
-      width: 0%;
-      height: 100%;
-      background-color: #00f0ff;
-      border-radius: 8px;
-      transition: width 0.4s ease;
+      box-shadow: 0 0 20px rgba(255, 65, 108, 0.9), 0 0 40px rgba(255, 75, 43, 0.9);
+      cursor: pointer;
     }
   </style>
 </head>
+
 <body>
 
-  <h1>ReptideHosting Dashboard</h1>
+  <!-- NAVIGATION -->
+  <nav class="navbar">
+    <div class="logo">🌀 ReptideHosting</div>
+    <ul class="nav-links">
+      <li><a href="#">Dashboard</a></li>
+      <li><a href="#">My Servers</a></li>
+      <li><a href="#">Create</a></li>
+      <li><a href="#">Settings</a></li>
+      <li><a href="#">Logout</a></li>
+    </ul>
+  </nav>
 
-  <div id="createBox">
-    <p style="color:#ff6b6b;">🚫 No Server Created</p>
-
-    <div class="inputs">
-      <input type="text" id="servername" placeholder="Enter Server Name" />
-      <input type="text" id="serverip" placeholder="Enter Server IP or Domain" />
+  <!-- MAIN DASHBOARD -->
+  <main class="dashboard-container">
+    <h1>Welcome to Your Panel</h1>
+    <div class="button-group">
+      <button class="valorant-btn">Create Server</button>
+      <button class="valorant-btn">Start</button>
+      <button class="valorant-btn">Stop</button>
+      <button class="valorant-btn">Delete</button>
     </div>
-
-    <button class="create-btn" id="createBtn" onclick="createServer()">➕ Create Server</button>
-
-    <div id="progressBox" class="hidden">
-      <p>Creating server... please wait</p>
-      <div class="progress-bar-container">
-        <div id="bar" class="progress-bar"></div>
-      </div>
-    </div>
-  </div>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
-    import {
-      getDatabase, ref, set, update
-    } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBDJgEb2uCYOTfACJRr4ni-TPLdocP4pxk",
-      authDomain: "data-5f291.firebaseapp.com",
-      projectId: "data-5f291",
-      storageBucket: "data-5f291.appspot.com",
-      messagingSenderId: "397689315534",
-      appId: "1:397689315534:web:88980e22fd9b4c8456f09f"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
-
-    let uid = null;
-
-    onAuthStateChanged(auth, (user) => {
-      if (!user) return location.href = 'login.html';
-      uid = user.uid;
-    });
-
-    function createServer() {
-      const name = document.getElementById('servername').value.trim();
-      const ip = document.getElementById('serverip').value.trim();
-      const createBtn = document.getElementById('createBtn');
-      const bar = document.getElementById('bar');
-      const progressBox = document.getElementById('progressBox');
-
-      if (!name || !ip) return alert("Please enter both server name and IP.");
-
-      createBtn.disabled = true;
-      progressBox.classList.remove("hidden");
-
-      let progress = 0;
-
-      const loader = setInterval(() => {
-        progress += Math.random() * 20;
-        bar.style.width = Math.min(progress, 100) + "%";
-
-        if (progress >= 100) {
-          clearInterval(loader);
-
-          // Save server info
-          set(ref(db, `users/${uid}/server`), {
-            name: name,
-            ip: ip,
-            ram: 3072,
-            type: "Vanilla",
-            status: "Offline"
-          });
-
-          // Trigger auto-deploy
-          update(ref(db, `users/${uid}`), {
-            deployTrigger: true
-          }).then(() => {
-            bar.style.backgroundColor = "#00ff88";
-            progressBox.innerHTML = "<p style='color:#00ff88;'>✅ Server Created Successfully!</p>";
-          });
-        }
-      }, 500);
-    }
-  </script>
+  </main>
 
 </body>
 </html>
