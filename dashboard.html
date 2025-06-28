@@ -5,12 +5,11 @@
   <title>ReptideHosting Panel</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
-  <script type="module" src="firebase.js"></script>
+  <script type="module" src="./firebase.js"></script>
   <style>
-    /* Basic responsive layout, reused from previous steps */
     body {
-      margin: 0;
       font-family: 'Orbitron', sans-serif;
+      margin: 0;
       background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
       color: white;
       padding: 2rem;
@@ -18,7 +17,13 @@
       flex-direction: column;
       align-items: center;
     }
-    h1 { text-align: center; margin-bottom: 2rem; }
+
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 2rem;
+    }
+
     .card-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -26,9 +31,17 @@
       max-width: 800px;
       width: 100%;
     }
-    .card { background: #1e1e2f; padding: 1rem; border-radius: 10px; text-align: center; }
+
+    .card {
+      background: #1e1e2f;
+      padding: 1rem;
+      border-radius: 10px;
+      text-align: center;
+    }
+
     .card-title { color: #ccc; }
     .card-value { font-size: 1.3rem; color: #00ffcc; }
+
     .btn {
       background: linear-gradient(135deg, #ff416c, #ff4b2b);
       padding: 0.8rem 2rem;
@@ -37,19 +50,41 @@
       font-size: 1rem;
       color: white;
       margin-top: 1rem;
+      cursor: pointer;
     }
+
     .popup-bg {
-      position: fixed; inset: 0;
+      position: fixed;
+      inset: 0;
       background: rgba(0,0,0,0.7);
-      display: none; align-items: center; justify-content: center;
+      display: none;
+      align-items: center;
+      justify-content: center;
       z-index: 99;
     }
-    .popup { background: #2f2f4f; padding: 2rem; border-radius: 10px; width: 90%; max-width: 400px; }
-    input, select {
-      width: 100%; margin: 0.5rem 0; padding: 0.6rem;
-      background: #1c1b33; color: white; border: none; border-radius: 8px;
+
+    .popup {
+      background: #2f2f4f;
+      padding: 2rem;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
     }
-    .message { margin: 1rem 0; font-size: 1.1rem; }
+
+    input, select {
+      width: 100%;
+      margin: 0.5rem 0;
+      padding: 0.6rem;
+      background: #1c1b33;
+      color: white;
+      border: none;
+      border-radius: 8px;
+    }
+
+    .message {
+      margin: 1rem 0;
+      font-size: 1.1rem;
+    }
   </style>
 </head>
 <body>
@@ -75,13 +110,13 @@
       <input id="disk" type="number" placeholder="Disk (MB)" />
       <input id="cpu" type="number" placeholder="CPU (%)" />
       <select id="onlineMode">
-        <option value="true">True</option>
-        <option value="false">false</option>
+        <option value="true">Online Mode</option>
+        <option value="false">Offline</option>
       </select>
       <select id="version">
-        <option>1.20.4</option>
-        <option>1.20.2</option>
-        <option>1.20.6</option>
+        <option>1.20.1</option>
+        <option>1.19.4</option>
+        <option>1.18.2</option>
       </select>
       <select id="visibility">
         <option value="public">Public</option>
@@ -91,7 +126,7 @@
     </div>
   </div>
 
-  <!-- Manage Panel -->
+  <!-- Manage Popup -->
   <div class="popup-bg" id="managePopup">
     <div class="popup">
       <h2>🧾 Server Login</h2>
@@ -103,7 +138,12 @@
 
   <script type="module">
     import { db } from './firebase.js';
-    import { collection, addDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import {
+      collection,
+      addDoc,
+      doc,
+      onSnapshot
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     let serverDocId = null;
 
@@ -120,14 +160,20 @@
       const version = document.getElementById("version").value;
       const visibility = document.getElementById("visibility").value;
 
+      // Submit to Firebase
       const docRef = await addDoc(collection(db, "servers"), {
-        name, ram, disk, cpu, onlineMode, version, visibility,
+        name,
+        ram,
+        disk,
+        cpu,
+        onlineMode,
+        version,
+        visibility,
         approved: false,
         createdAt: Date.now()
       });
 
       serverDocId = docRef.id;
-
       document.getElementById("formPopup").style.display = "none";
       document.getElementById("status").innerText = "⏳ Please wait, we will notify you...";
 
