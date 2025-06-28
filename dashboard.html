@@ -2,271 +2,144 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ReptideHosting Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <script type="module" src="firebase.js"></script>
   <style>
-    * { box-sizing: border-box; }
-
+    /* Basic responsive layout, reused from previous steps */
     body {
       margin: 0;
       font-family: 'Orbitron', sans-serif;
       background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
-      color: #fff;
+      color: white;
       padding: 2rem;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
-
-    h1 {
-      font-size: 2rem;
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-
+    h1 { text-align: center; margin-bottom: 2rem; }
     .card-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
       gap: 1rem;
-      width: 100%;
       max-width: 800px;
-      margin-bottom: 2rem;
+      width: 100%;
     }
-
-    .card {
-      background: linear-gradient(135deg, #1c1b33, #2a2740);
-      border-radius: 10px;
-      padding: 1rem;
-      text-align: center;
-      box-shadow: 0 0 10px rgba(64, 64, 128, 0.5);
-      transition: 0.3s ease;
-    }
-
-    .card:hover {
-      transform: scale(1.03);
-      box-shadow: 0 0 15px #00c8ff;
-    }
-
-    .card-title {
-      font-size: 0.9rem;
-      color: #ccc;
-    }
-
-    .card-value {
-      font-size: 1.3rem;
-      color: #00ffd9;
-    }
-
-    .message {
-      background: rgba(255,255,255,0.1);
-      padding: 1rem;
-      border-radius: 10px;
-      margin-bottom: 2rem;
-      animation: pulse 2s infinite;
-    }
-
+    .card { background: #1e1e2f; padding: 1rem; border-radius: 10px; text-align: center; }
+    .card-title { color: #ccc; }
+    .card-value { font-size: 1.3rem; color: #00ffcc; }
     .btn {
       background: linear-gradient(135deg, #ff416c, #ff4b2b);
-      border: none;
       padding: 0.8rem 2rem;
       border-radius: 10px;
+      border: none;
       font-size: 1rem;
       color: white;
-      font-weight: bold;
-      box-shadow: 0 0 10px rgba(255, 65, 108, 0.7);
-      transition: 0.2s;
-    }
-
-    .btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 20px #ff4b2b;
-    }
-
-    .server-image {
-      width: 100%;
-      max-width: 300px;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
-      margin-bottom: 1rem;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 0.6; }
-      50% { opacity: 1; }
-    }
-
-    .popup-bg {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 999;
-    }
-
-    .popup {
-      background: #1e1e2f;
-      padding: 2rem;
-      border-radius: 15px;
-      max-width: 90%;
-      width: 400px;
-      box-shadow: 0 0 15px #0ff;
-    }
-
-    .popup h2 {
-      margin-top: 0;
-    }
-
-    .popup label {
-      display: block;
       margin-top: 1rem;
-      font-size: 0.9rem;
     }
-
-    .popup input, .popup select {
-      width: 100%;
-      padding: 0.5rem;
-      border-radius: 8px;
-      border: none;
-      margin-top: 0.3rem;
-      background: #2f2f4f;
-      color: white;
+    .popup-bg {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7);
+      display: none; align-items: center; justify-content: center;
+      z-index: 99;
     }
-
-    .popup .btn {
-      margin-top: 1.5rem;
-      width: 100%;
+    .popup { background: #2f2f4f; padding: 2rem; border-radius: 10px; width: 90%; max-width: 400px; }
+    input, select {
+      width: 100%; margin: 0.5rem 0; padding: 0.6rem;
+      background: #1c1b33; color: white; border: none; border-radius: 8px;
     }
-
-    .hidden {
-      display: none;
-    }
-
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 1.4rem;
-      }
-    }
+    .message { margin: 1rem 0; font-size: 1.1rem; }
   </style>
 </head>
 <body>
-
   <h1>🎮 ReptideHosting Dashboard</h1>
-  <div id="dashboard"></div>
 
-  <!-- Server Form Popup -->
-  <div class="popup-bg hidden" id="formPopup">
+  <div id="dashboard">
+    <div class="card-grid">
+      <div class="card"><div class="card-title">RAM</div><div class="card-value">0 / 0 MB</div></div>
+      <div class="card"><div class="card-title">Disk</div><div class="card-value">0 / 0 MB</div></div>
+      <div class="card"><div class="card-title">CPU</div><div class="card-value">0%</div></div>
+      <div class="card"><div class="card-title">Slot</div><div class="card-value">0 / 1</div></div>
+    </div>
+    <div class="message" id="status">❌ No server created</div>
+    <button class="btn" onclick="showForm()">🚀 Create Server</button>
+  </div>
+
+  <!-- Form Popup -->
+  <div class="popup-bg" id="formPopup">
     <div class="popup">
-      <h2>🛠 Create Server</h2>
-      <label>Server Name</label>
-      <input type="text" id="serverName" placeholder="Enter name">
-
-      <label>RAM (MB)</label>
-      <input type="number" id="ram" placeholder="512">
-
-      <label>Disk (MB)</label>
-      <input type="number" id="disk" placeholder="1024">
-
-      <label>CPU (%)</label>
-      <input type="number" id="cpu" placeholder="50">
-
-      <label>Online Mode</label>
+      <h2>Create Server</h2>
+      <input id="serverName" placeholder="Server Name" />
+      <input id="ram" type="number" placeholder="RAM (MB)" />
+      <input id="disk" type="number" placeholder="Disk (MB)" />
+      <input id="cpu" type="number" placeholder="CPU (%)" />
       <select id="onlineMode">
-        <option value="true">Enabled</option>
-        <option value="false">Disabled</option>
+        <option value="true">Online Mode</option>
+        <option value="false">Offline</option>
       </select>
-
-      <label>Version</label>
       <select id="version">
-        <option value="1.20.1">1.20.1</option>
-        <option value="1.19.4">1.19.4</option>
-        <option value="1.18.2">1.18.2</option>
+        <option>1.20.1</option>
+        <option>1.19.4</option>
+        <option>1.18.2</option>
       </select>
-
-      <label>Visibility</label>
       <select id="visibility">
         <option value="public">Public</option>
         <option value="private">Private</option>
       </select>
-
-      <button class="btn" onclick="submitForm()">Create</button>
+      <button class="btn" onclick="submitForm()">Submit</button>
     </div>
   </div>
 
-  <!-- Manage Popup -->
-  <div class="popup-bg hidden" id="managePopup">
+  <!-- Manage Panel -->
+  <div class="popup-bg" id="managePopup">
     <div class="popup">
-      <h2>🧾 Manage Server</h2>
-      <label>Email ID</label>
-      <input type="email" placeholder="your@email.com">
-      <label>Password</label>
-      <input type="password" placeholder="********">
+      <h2>🧾 Server Login</h2>
+      <input type="email" placeholder="Email ID" />
+      <input type="password" placeholder="Password" />
       <a href="https://panel.example.com" class="btn" target="_blank">Go to Panel</a>
     </div>
   </div>
 
-  <script>
-    let hasServer = false;
-    const dashboard = document.getElementById("dashboard");
+  <script type="module">
+    import { db } from './firebase.js';
+    import { collection, addDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    function createCard(title, value) {
-      return `
-        <div class="card">
-          <div class="card-title">${title}</div>
-          <div class="card-value">${value}</div>
-        </div>`;
+    let serverDocId = null;
+
+    window.showForm = () => {
+      document.getElementById("formPopup").style.display = "flex";
     }
 
-    function renderPhase1() {
-      dashboard.innerHTML = `
-        <div class="card-grid">
-          ${createCard("RAM", "0 / 0 MB")}
-          ${createCard("Disk", "0 / 0 MB")}
-          ${createCard("CPU", "0%")}
-          ${createCard("Slots", "0 / 1")}
-        </div>
-        <div class="message">❌ No server created</div>
-        <button class="btn" onclick="document.getElementById('formPopup').classList.remove('hidden')">Create Server</button>
-      `;
+    window.submitForm = async () => {
+      const name = document.getElementById("serverName").value;
+      const ram = document.getElementById("ram").value;
+      const disk = document.getElementById("disk").value;
+      const cpu = document.getElementById("cpu").value;
+      const onlineMode = document.getElementById("onlineMode").value;
+      const version = document.getElementById("version").value;
+      const visibility = document.getElementById("visibility").value;
+
+      const docRef = await addDoc(collection(db, "servers"), {
+        name, ram, disk, cpu, onlineMode, version, visibility,
+        approved: false,
+        createdAt: Date.now()
+      });
+
+      serverDocId = docRef.id;
+
+      document.getElementById("formPopup").style.display = "none";
+      document.getElementById("status").innerText = "⏳ Please wait, we will notify you...";
+
+      // Live listen for approval
+      const ref = doc(db, "servers", docRef.id);
+      onSnapshot(ref, (docSnap) => {
+        if (docSnap.exists() && docSnap.data().approved === true) {
+          document.getElementById("status").innerText = "✅ Server approved!";
+          document.getElementById("managePopup").style.display = "flex";
+        }
+      });
     }
-
-    function renderPhase2() {
-      dashboard.innerHTML = `
-        <div class="card-grid">
-          ${createCard("RAM", "512 / 1024 MB")}
-          ${createCard("Disk", "1024 / 2048 MB")}
-          ${createCard("CPU", "45%")}
-          ${createCard("Slots", "1 / 1")}
-        </div>
-        <div class="message">✅ Server created successfully</div>
-        <img src="https://i.imgur.com/hYGEZBt.jpg" class="server-image">
-        <button class="btn" onclick="document.getElementById('managePopup').classList.remove('hidden')">Manage Server</button>
-      `;
-    }
-
-    function submitForm() {
-      document.getElementById('formPopup').classList.add('hidden');
-      dashboard.innerHTML = `<div class="message">⏳ Please wait, we will notify you...</div>`;
-      setTimeout(() => {
-        hasServer = true;
-        render();
-      }, 2000);
-    }
-
-    function render() {
-      hasServer ? renderPhase2() : renderPhase1();
-    }
-
-    render();
-
-    // Close popups on outside click
-    window.addEventListener('click', function(e) {
-      if (e.target.classList.contains('popup-bg')) {
-        document.querySelectorAll('.popup-bg').forEach(p => p.classList.add('hidden'));
-      }
-    });
   </script>
 </body>
 </html>
