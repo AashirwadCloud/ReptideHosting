@@ -1,10 +1,98 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>ReptideHosting</title>
-  </head>
-  <body>
-    <h1>Welcome to ReptideHosting</h1>
-    <p>Your free Minecraft hosting dashboard is under construction!</p>
-  </body>
+<head>
+  <title>Login • ReptideHosting</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      font-family: 'Orbitron', sans-serif;
+      overflow: hidden;
+    }
+    video.bg {
+      position: fixed;
+      right: 0; bottom: 0;
+      min-width: 100%;
+      min-height: 100%;
+      z-index: -1;
+      filter: brightness(0.4);
+    }
+    .form-container {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.7);
+      padding: 30px;
+      border-radius: 12px;
+      color: white;
+      width: 300px;
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      background: #1f1f2f;
+      color: white;
+      border: none;
+      border-radius: 6px;
+    }
+    .btn {
+      background: linear-gradient(135deg, #ff416c, #ff4b2b);
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      margin-top: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<video class="bg" autoplay muted loop>
+  <source src="https://cdn.pixabay.com/vimeo/769449094/minecraft-142324.mp4?width=640&hash=bd00c59dc6643284d2494a116a2d2fd3a5c6f87f" type="video/mp4">
+</video>
+
+<div class="form-container">
+  <h2>ReptideHosting</h2>
+  <input type="email" id="email" placeholder="Email" />
+  <input type="password" id="password" placeholder="Password" />
+  <button class="btn" onclick="login()">Login</button>
+  <button class="btn" onclick="signup()">Sign Up</button>
+</div>
+
+<script type="module">
+  import { auth } from './firebase.js';
+  import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  window.login = async () => {
+    const email = emailInput.value;
+    const password = passwordInput.value;
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      window.location.href = "dashboard.html";
+    } catch (e) {
+      alert("Login failed: " + e.message);
+    }
+  }
+
+  window.signup = async () => {
+    const email = emailInput.value;
+    const password = passwordInput.value;
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      window.location.href = "dashboard.html";
+    } catch (e) {
+      alert("Signup failed: " + e.message);
+    }
+  }
+
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+</script>
+
+</body>
 </html>
