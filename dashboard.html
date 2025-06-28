@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>ReptideHosting Panel</title>
+  <title>Dashboard • ReptideHosting</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
   <script type="module" src="./firebase.js"></script>
@@ -17,13 +17,11 @@
       flex-direction: column;
       align-items: center;
     }
-
     h1 {
       text-align: center;
       font-size: 2rem;
       margin-bottom: 2rem;
     }
-
     .card-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -31,14 +29,12 @@
       max-width: 800px;
       width: 100%;
     }
-
     .card {
       background: #1e1e2f;
       padding: 1rem;
       border-radius: 10px;
       text-align: center;
     }
-
     .card-title { color: #ccc; }
     .card-value { font-size: 1.3rem; color: #00ffcc; }
 
@@ -54,12 +50,9 @@
     }
 
     .popup-bg {
-      position: fixed;
-      inset: 0;
+      position: fixed; inset: 0;
       background: rgba(0,0,0,0.7);
-      display: none;
-      align-items: center;
-      justify-content: center;
+      display: none; align-items: center; justify-content: center;
       z-index: 99;
     }
 
@@ -67,8 +60,7 @@
       background: #2f2f4f;
       padding: 2rem;
       border-radius: 10px;
-      width: 90%;
-      max-width: 400px;
+      width: 90%; max-width: 400px;
     }
 
     input, select {
@@ -88,7 +80,7 @@
   </style>
 </head>
 <body>
-  <h1>🎮 ReptideHosting Dashboard</h1>
+  <h1>🎮 Welcome to ReptideHosting</h1>
 
   <div id="dashboard">
     <div class="card-grid">
@@ -101,7 +93,7 @@
     <button class="btn" onclick="showForm()">🚀 Create Server</button>
   </div>
 
-  <!-- Form Popup -->
+  <!-- Form -->
   <div class="popup-bg" id="formPopup">
     <div class="popup">
       <h2>Create Server</h2>
@@ -129,7 +121,7 @@
   <!-- Manage Popup -->
   <div class="popup-bg" id="managePopup">
     <div class="popup">
-      <h2>🧾 Server Login</h2>
+      <h2>🧾 Server Info</h2>
       <input type="email" placeholder="Email ID" />
       <input type="password" placeholder="Password" />
       <a href="https://panel.example.com" class="btn" target="_blank">Go to Panel</a>
@@ -139,10 +131,7 @@
   <script type="module">
     import { db } from './firebase.js';
     import {
-      collection,
-      addDoc,
-      doc,
-      onSnapshot
+      collection, addDoc, doc, onSnapshot
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     let serverDocId = null;
@@ -152,40 +141,44 @@
     }
 
     window.submitForm = async () => {
-      const name = document.getElementById("serverName").value;
-      const ram = document.getElementById("ram").value;
-      const disk = document.getElementById("disk").value;
-      const cpu = document.getElementById("cpu").value;
-      const onlineMode = document.getElementById("onlineMode").value;
-      const version = document.getElementById("version").value;
-      const visibility = document.getElementById("visibility").value;
+      const name = serverName.value;
+      const ram = ramInput.value;
+      const disk = diskInput.value;
+      const cpu = cpuInput.value;
+      const onlineMode = onlineModeInput.value;
+      const version = versionInput.value;
+      const visibility = visibilityInput.value;
 
-      // Submit to Firebase
       const docRef = await addDoc(collection(db, "servers"), {
-        name,
-        ram,
-        disk,
-        cpu,
-        onlineMode,
-        version,
-        visibility,
+        name, ram, disk, cpu, onlineMode, version, visibility,
         approved: false,
         createdAt: Date.now()
       });
 
       serverDocId = docRef.id;
-      document.getElementById("formPopup").style.display = "none";
-      document.getElementById("status").innerText = "⏳ Please wait, we will notify you...";
+      formPopup.style.display = "none";
+      status.innerText = "⏳ Please wait, we will notify you...";
 
-      // Live listen for approval
-      const ref = doc(db, "servers", docRef.id);
+      const ref = doc(db, "servers", serverDocId);
       onSnapshot(ref, (docSnap) => {
         if (docSnap.exists() && docSnap.data().approved === true) {
-          document.getElementById("status").innerText = "✅ Server approved!";
-          document.getElementById("managePopup").style.display = "flex";
+          status.innerText = "✅ Server approved!";
+          managePopup.style.display = "flex";
         }
       });
     }
+
+    const serverName = document.getElementById("serverName");
+    const ramInput = document.getElementById("ram");
+    const diskInput = document.getElementById("disk");
+    const cpuInput = document.getElementById("cpu");
+    const onlineModeInput = document.getElementById("onlineMode");
+    const versionInput = document.getElementById("version");
+    const visibilityInput = document.getElementById("visibility");
+
+    const status = document.getElementById("status");
+    const formPopup = document.getElementById("formPopup");
+    const managePopup = document.getElementById("managePopup");
   </script>
 </body>
 </html>
